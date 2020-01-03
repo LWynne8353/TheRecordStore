@@ -28,7 +28,7 @@ function recordTableView() {
             name: "music",
             type: "list",
             message: "Like to take a look at the vinyls?",
-            choices: ["Yes" , "No"]
+            choices: ["Yes", "No"]
 
         }).then(function (choose) {
             if (choose.music === "Yes") {
@@ -46,11 +46,55 @@ function displayRecords() {
     connection.query(showRecords, function (err, res) {
         if (err) throw err;
         console.table(res);
-        askWhatVinyl();
+        askWhatVinyl(res);
 
-});
+    });
 }
-function askWhatVinyl() {
+function askWhatVinyl(res) {
     inquirer
-    .prompt({})
+        .prompt({
+            name: "choice",
+            type: "input",
+            message: "Select vinyl by the id number?",
+        }).then(function (choose) {
+            var id = parseInt(choose.choice)
+            console.log(id);
+            var record = "SELECT * FROM music WHERE ID = id";
+            if (record) {
+                howManyRecords(record)
+            } else {
+                console.log("All out, try another");
+                displayRecords(res);
+            }
+        });
+    }
+function statusRecord(id, stock) {
+    console.log(id);
+    console.log(stock);
+    for (i = 0; i < stock.length; i++); {
+        if (stock[i].id === id) {
+            console.log(stock)
+            return stock[i];
+        }
+    }
+    return null;
+}
+function howManyRecords(record) {
+    inquirer
+        .prompt({
+            name: "quantity",
+            type: "input",
+            message: "How many would you like?"
+        }).then(function (value) {
+            var stock = parseInt(value.stock)
+            if (stock > record.stock) {
+                console.log("insuffient quantity")
+                displayRecords()
+            } else {
+                buyRecords(record, stock)
+            }
+        });
+}
+function buyRecords(record){
+    
 }
