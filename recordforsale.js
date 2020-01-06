@@ -71,6 +71,7 @@ function askWhatVinyl(stock) {
         });
     }
     // function statusRecord(id,record) {
+        //
     //     for (i = 0; i < record.length; i++); {
     //         if (record[i].id === id) {
     //             console.log(record)
@@ -83,13 +84,13 @@ function askWhatVinyl(stock) {
 function howManyRecords(record) {
     inquirer
         .prompt({
-            name: "quantity",
+            name: "stock",
             type: "input",
             message: "How many would you like?"
         }).then(function (value) {
             var stock = parseInt(value.stock)
             if (stock > record.stock) {
-                console.log("insuffient quantity")
+                console.log("insuffient stock")
                 displayRecords()
             } else {
                 buyRecords(record, stock)
@@ -97,16 +98,16 @@ function howManyRecords(record) {
         });
 }
 function buyRecords(record, stock){
-    connection.query("UPDATE PRODUCTS SET stock = stock - ? WHERE id = ?",
+    connection.query("UPDATE Record_Vinyl SET Stock = Stock - ? WHERE id = ?",
     [record, stock.id],
     function (err, res) {
-        console.log("Purchase was made, Thank you")
-        //connection.end();
+        console.log("Thank you and enjoy your record(s)")
         yourGrandTotal(record, stock.price);
     })
 }
 function yourGrandTotal(record, price) {
     var total = record * price
-    console.log("Your purchase" + total)
+    console.log("Vinyl Purchase" + total)
     recordTableView();
 }
+        //connection.end();
