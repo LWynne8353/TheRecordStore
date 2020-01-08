@@ -74,8 +74,7 @@ function askWhatVinyl() {
                 for (i = 0; i <res.length; i++){
 
                     if (res[i].id === id){
-                        console.log("Num in stock")
-                        console.log(res[i].Stock);
+                        //console.log(res[i].Stock);
 
                         if(res[i].Stock < quantity) {
                             console.log("All out, try another")
@@ -90,7 +89,7 @@ function askWhatVinyl() {
             })
         });
 }
-
+//Update database
 function buyRecords(record, stock, price) {
     connection.query("UPDATE music SET Stock = ? WHERE id = ?",
         [stock, record],
@@ -99,6 +98,7 @@ function buyRecords(record, stock, price) {
             yourGrandTotal(record, price);
         })
 }
+//Displays the grand total
 function yourGrandTotal(record, price) {
     var total = record * price
     console.log("Vinyl Purchase" + total)
