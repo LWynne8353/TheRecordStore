@@ -50,7 +50,7 @@ function displayRecords() {
 
     });
 }
-//asking which one they would like
+//asking which one they would like and how many. 
 function askWhatVinyl() {
     inquirer
         .prompt([
@@ -60,58 +60,43 @@ function askWhatVinyl() {
             message: "Select vinyl by the id number?",
         },
         {
-            name: "stock",
+            name: "quantity",
             type: "input",
             message: "How many would you like?"
 
-        }]).then(function (id) {
-            var stock = parseInt(id.choice)
-            
-            console.log(stock);
-            var record = "SELECT * FROM music WHERE ID = id";
-            if (record) {
-                buyRecords(record)
-            } else {
-                console.log("All out, try another");
-                displayRecords(res);
-            }
+        }]).then(function (result) {
+            var id = parseInt(result.choice)
+            var quantity = parseInt(result.quantity);
+            var showRecords = "SELECT * FROM music";
+            connection.query(showRecords, function (err, res) {
+                if (err) throw err;
+                    
+                for (i = 0; i <res.length; i++){
 
+                    if (res[i].id === id){
+                        console.log("Num in stock")
+                        console.log(res[i].Stock);
+
+                        if(res[i].Stock < quantity) {
+                            console.log("All out, try another")
+                        } else {
+                            var newStock = res[i].Stock - quantity;
+                            console.log("newstock:", newStock)
+                            buyRecords(id, newStock, res[i].Price)
+                        }
+                    }
+
+                }
+            })
         });
 }
-// function statusRecord(id,record) {
 
-//     for (i = 0; i < record.length; i++); {
-//         if (record[i].id === id) {
-//             console.log(record)
-//             return record[i];
-//         }
-//     }
-//     return null;
-// }
-
-
-//         }).then(function (value) {
-//             var stock = parseInt(value.record)
-//             for (i = 0; i < stock.length; i++); {
-//                 if (record[i].id === id) {
-
-//                     return record[i];
-//                 }
-//             }
-//             if (stock > record.stock) {
-//                 console.log("insuffient stock")
-//                 displayRecords()
-//             } else {
-//                 buyRecords(record, stock)
-//             }
-//         });
-// }
-function buyRecords(record, stock) {
-    connection.query("UPDATE Record_Vinyl SET stock = stock - ? WHERE id = ?",
-        [record, stock.id],
+function buyRecords(record, stock, price) {
+    connection.query("UPDATE music SET Stock = ? WHERE id = ?",
+        [stock, record],
         function (err, res) {
             console.log("Thank you and enjoy your record(s)")
-            yourGrandTotal(record, stock.price);
+            yourGrandTotal(record, price);
         })
 }
 function yourGrandTotal(record, price) {
@@ -119,4 +104,4 @@ function yourGrandTotal(record, price) {
     console.log("Vinyl Purchase" + total)
     recordTableView();
 }
-        //connection.end();
+//         //connection.end();
